@@ -78,9 +78,5 @@ jobs:
           script: |
             adb wait-for-device
             adb devices
-
             echo "Android Emulator Ready"
-
-            while true; do
-              sleep 60
-            done
+            while true; do sleep 60; done
