@@ -18,7 +18,6 @@ jobs:
 
       - name: Setup KVM Permissions
         run: |
-          # Attempts to fix permissions if hardware acceleration is available on the runner node
           if [ -e /dev/kvm ]; then
             sudo chown $USER:$USER /dev/kvm
             sudo chmod 777 /dev/kvm
