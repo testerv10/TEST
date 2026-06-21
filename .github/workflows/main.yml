@@ -7,7 +7,7 @@ jobs:
   android:
     runs-on: ubuntu-latest
     timeout-minutes: 360
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -15,6 +15,15 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y qemu-kvm xvfb x11vnc wget curl unzip git
+
+      - name: Setup KVM Permissions
+        run: |
+          # Attempts to fix permissions if hardware acceleration is available on the runner node
+          if [ -e /dev/kvm ]; then
+            sudo chown $USER:$USER /dev/kvm
+            sudo chmod 777 /dev/kvm
+          fi
+          sudo usermod -aG kvm $USER || true
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -57,13 +66,16 @@ jobs:
       - name: Start Emulator
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
-          api-level: 34
+          api-level: 29
           arch: x86_64
           profile: pixel_7
+          disable-animations: true
           emulator-options: >
             -gpu swiftshader_indirect
             -noaudio
             -no-snapshot
+            -camera-back none
+            -camera-front none
           script: |
             adb wait-for-device
             adb devices
